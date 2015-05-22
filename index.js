@@ -177,6 +177,7 @@ var setupPageConnection = function (pageId, connection) {
       socket.on('message', function (data) {
         var msg = JSON.parse(data)
         msg = intercepter.hijackResponse(msg, target, connection, socket)
+        if(!msg) return
 
         // Only forward messages from the first connected socket - for now
         if (target.connections.indexOf(socket) === 0) {
@@ -188,6 +189,8 @@ var setupPageConnection = function (pageId, connection) {
       connection.on('message', function (data) {
         var msg = JSON.parse(data)
         msg = intercepter.hijackRequest(msg, target, connection, socket)
+        if(!msg) return
+
         logger.info('websocket.' + socket.url + '.message.send', msg)
         socket.send(JSON.stringify(msg))
       })

@@ -7,10 +7,21 @@ var Intercepter = function () {
   var nodeIndex = {}
 
   this.hijackRequest = function (msg, target, connection, socket) {
-    logger.info('hijackRequest', msg.id)
+    logger.info('hijackRequest', msg.id, msg.method)
 
     if (msg.method && msg.method === 'DOM.getDocument') {
       getDocumentIndex[socket.url] = msg.id
+    }
+
+    if (msg.method && msg.method === 'Page.canScreencast') {
+      var reply = {
+        id: msg.id,
+        result: {
+          result: true
+        }
+      }
+      connection.send(JSON.stringify(reply))
+      return null
     }
 
     if (target.connections.indexOf(socket) === 0) {
