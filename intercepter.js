@@ -35,10 +35,17 @@ var Intercepter = function () {
     // Re-write node-ids for all other sockets than the first/master
     if (target.connections.indexOf(socket) > 0) {
       if (msg.params && msg.params.nodeId) {
+        console.log('intercepter.rewrite.nodeID', msg.params.nodeId)
         if (nodeIndex && nodeIndex[socket.url]) {
+
           var index = nodeIndex[masterSocketUrl].indexOf(msg.params.nodeId)
+          console.log('intercepter.rewrite.nodeIndex', index)
           var mappedNodeId = nodeIndex[socket.url][index]
-          msg.params.nodeId = mappedNodeId
+
+          if(mappedNodeId) {
+            console.log('intercepter.rewrite.nodeID.overridden', msg.params.nodeId, mappedNodeId)
+            msg.params.nodeId = mappedNodeId
+          }
         }
       }
     }
