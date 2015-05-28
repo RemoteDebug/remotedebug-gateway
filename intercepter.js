@@ -1,6 +1,10 @@
 var deepPluck = require('deep-pluck')
 var logger = require('./logger')
 
+Array.prototype.insert = function (index, items) {
+  this.splice.apply(this, [index, 0].concat(items));
+}
+
 var Intercepter = function () {
   var getDocumentIndex = {}
   var masterSocketUrl
@@ -47,7 +51,22 @@ var Intercepter = function () {
 
     if (msg.id === getDocumentIndex[socket.url]) {
       nodeIndex[socket.url] = deepPluck(msg.result, 'nodeId')
+      console.log('DOM.getDocument.index.updated',  nodeIndex[socket.url]);
     }
+
+    if(msg.method === 'DOM.setChildNodes') {
+      var nodeId = msg.params.parentId
+      var index =  nodeIndex[socket.url]
+
+      if(index) {
+        var nodeIndexPosition = index.indexOf(nodeId) + 1
+        var newNodeIds = deepPluck(msg.params.nodes, 'nodeId')
+        // Insert at nodeIndexPosition
+        index.insert(nodeIndexPosition, newNodeIds)
+        console.log('DOM.setChildNode.index.updated', index);
+      }
+    }
+
     return msg
   }
 }
