@@ -1,5 +1,5 @@
 {
-  "name": "remotedebug-muxer",
+  "name": "remotedebug-gateway",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
