@@ -192,7 +192,10 @@ var setupPageConnection = function (pageId, connection) {
         if(!msg) return
 
         logger.info('websocket.' + socket.url + '.message.send', msg)
-        socket.send(JSON.stringify(msg))
+
+        if(socket.readyState === WebSocket.OPEN) {
+          socket.send(JSON.stringify(msg))
+        }
       })
     })
 
