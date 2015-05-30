@@ -191,7 +191,7 @@ var setupPageConnection = function (pageId, connection) {
         msg = intercepter.hijackRequest(msg, target, connection, socket)
         if(!msg) return
 
-        logger.info('websocket.' + socket.url + '.message.send', msg)
+        logger.info('websocket.' + socket.url + '.message.send')
 
         if(socket.readyState === WebSocket.OPEN) {
           socket.send(JSON.stringify(msg))
