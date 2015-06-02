@@ -15,7 +15,6 @@
   "dependencies": {
     "deep-pluck": "^0.1.2",
     "express": "^4.12.3",
-    "socket.io": "^1.3.5",
     "winston": "^1.0.0",
     "ws": "yarax/ws"
   }
