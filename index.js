@@ -19,7 +19,7 @@ app.set('port', process.env.PORT || 8000)
 app.get('/', function (req, res) {
   logger.info('http.index')
   res.json({
-    msg: 'Hello'
+    msg: 'Hello! This is RemoteDebug Gateway'
   })
 })
 
@@ -177,7 +177,7 @@ var setupPageConnection = function (pageId, connection) {
       socket.on('message', function (data) {
         var msg = JSON.parse(data)
         msg = intercepter.hijackResponse(msg, target, connection, socket)
-        if(!msg) return
+        if (!msg) return
 
         // Only forward messages from the first connected socket - for now
         if (target.connections.indexOf(socket) === 0) {
@@ -189,11 +189,11 @@ var setupPageConnection = function (pageId, connection) {
       connection.on('message', function (data) {
         var msg = JSON.parse(data)
         msg = intercepter.hijackRequest(msg, target, connection, socket)
-        if(!msg) return
+        if (!msg) return
 
         logger.info('websocket.' + socket.url + '.message.send')
 
-        if(socket.readyState === WebSocket.OPEN) {
+        if (socket.readyState === WebSocket.OPEN) {
           socket.send(JSON.stringify(msg))
         }
       })
