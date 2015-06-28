@@ -1,81 +1,41 @@
-var deepPluck = require('deep-pluck')
+var requireDir = require('require-dir')
 var logger = require('./logger')
+var Promise = require('es6-promise').Promise;
 
-Array.prototype.insert = function (index, items) {
-  this.splice.apply(this, [index, 0].concat(items));
-}
+var loadedPlugins = requireDir('./plugins')
+var plugins = Object.keys(loadedPlugins).map(function (key) {
+  return loadedPlugins[key]
+})
+logger.info('Intercepter.plugins', plugins.length)
 
 var Intercepter = function () {
-  var getDocumentIndex = {}
-  var masterSocketUrl
-  var nodeIndex = {}
 
   this.hijackRequest = function (msg, target, connection, socket) {
-    logger.info('hijackRequest', msg.id, msg.method)
+    logger.info('Intercepter.hijackRequest', msg.id, msg.method)
 
-    if (msg.method && msg.method === 'DOM.getDocument') {
-      getDocumentIndex[socket.url] = msg.id
-    }
+    var queue = Promise.resolve(msg);
+    plugins.forEach(function (plugin) {
+      queue = queue.then(function(msg){
+        return plugin.onRequest(msg, target, connection, socket)
+      });
+    })
+    return queue;
 
-    if (msg.method && msg.method === 'Page.canScreencast') {
-      var reply = {
-        id: msg.id,
-        result: {
-          result: true
-        }
-      }
-      connection.send(JSON.stringify(reply))
-      return null
-    }
-
-    if (target.connections.indexOf(socket) === 0) {
-      masterSocketUrl = socket.url
-    }
-
-    // Re-write node-ids for all other sockets than the first/master
-    if (target.connections.indexOf(socket) > 0) {
-      if (msg.params && msg.params.nodeId) {
-        console.log('intercepter.rewrite.nodeID', msg.params.nodeId)
-        if (nodeIndex && nodeIndex[socket.url]) {
-
-          var index = nodeIndex[masterSocketUrl].indexOf(msg.params.nodeId)
-          console.log('intercepter.rewrite.nodeIndex', index)
-          var mappedNodeId = nodeIndex[socket.url][index]
-
-          if(mappedNodeId) {
-            console.log('intercepter.rewrite.nodeID.overridden', msg.params.nodeId, mappedNodeId)
-            msg.params.nodeId = mappedNodeId
-          }
-        }
-      }
-    }
-
-    return msg
   }
 
   this.hijackResponse = function (msg, target, connection, socket) {
-    logger.info('hijackResponse', msg.id)
+    logger.info('Intercepter.hijackResponse', msg.id)
 
-    if (msg.id === getDocumentIndex[socket.url]) {
-      nodeIndex[socket.url] = deepPluck(msg.result, 'nodeId')
-      console.log('DOM.getDocument.index.updated',  nodeIndex[socket.url]);
-    }
+    var queue = Promise.resolve(msg);
+    plugins.forEach(function (plugin) {
+      queue = queue.then(function(msg){
+        return plugin.onResponse(msg, target, connection, socket)
+      });
+    })
+    return queue;
 
-    if(msg.method === 'DOM.setChildNodes') {
-      var nodeId = msg.params.parentId
-      var index =  nodeIndex[socket.url]
-
-      if(index) {
-        var nodeIndexPosition = index.indexOf(nodeId) + 1
-        var newNodeIds = deepPluck(msg.params.nodes, 'nodeId')
-        // Insert at nodeIndexPosition
-        index.insert(nodeIndexPosition, newNodeIds)
-        console.log('DOM.setChildNode.index.updated', index);
-      }
-    }
-
-    return msg
   }
+
 }
 
 module.exports = new Intercepter()
