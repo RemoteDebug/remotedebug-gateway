@@ -13,12 +13,14 @@
     "standard": "^3.0.0"
   },
   "dependencies": {
+    "canvas": "^1.2.3",
     "clone": "^1.0.2",
     "deep-pluck": "^0.1.2",
+    "es6-promise": "^2.3.0",
     "express": "^4.12.3",
     "request": "^2.57.0",
     "require-dir": "^0.3.0",
-    "resemblejs": "^1.2.1",
+    "resemble": "^1.2.1",
     "winston": "^1.0.0",
     "ws": "yarax/ws"
   }
