@@ -1,24 +1,30 @@
 var logger = require('../logger')
+var Promise = require('es6-promise').Promise
 
 function ScreencastingPlugin () {
 
   this.onRequest = function (msg, target, connection, socket) {
-    if (msg.method && msg.method === 'Page.canScreencast') {
-      logger.info('ScreencastingPlugin.Page.canScreencast')
-      var reply = {
-        id: msg.id,
-        result: {
-          result: true
+    return new Promise(function (resolve, reject) {
+      if (msg.method && msg.method === 'Page.canScreencast') {
+        logger.info('ScreencastingPlugin.Page.canScreencast')
+        var reply = {
+          id: msg.id,
+          result: {
+            result: true
+          }
         }
+        connection.send(JSON.stringify(reply))
+        resolve(null)
+      } else {
+        resolve(msg)
       }
-      connection.send(JSON.stringify(reply))
-      return null
-    }
-    return msg
+    })
   },
 
   this.onResponse = function (msg, target, connection, socket) {
-    return msg
+    return new Promise(function (resolve, reject) {
+      resolve(msg)
+    })
   }
 
 }

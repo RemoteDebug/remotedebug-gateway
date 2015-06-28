@@ -176,26 +176,31 @@ var setupPageConnection = function (pageId, connection) {
       // Responses from connected clients
       socket.on('message', function (data) {
         var msg = JSON.parse(data)
-        msg = intercepter.hijackResponse(msg, target, connection, socket)
-        if (!msg) return
 
-        // Only forward messages from the first connected socket - for now
-        if (target.connections.indexOf(socket) === 0) {
-          connection.send(JSON.stringify(msg))
-        }
+        intercepter.hijackResponse(msg, target, connection, socket).then(function (msg) {
+          if (!msg) return
+
+          // Only forward messages from the first connected socket - for now
+          if (target.connections.indexOf(socket) === 0) {
+            connection.send(JSON.stringify(msg))
+          }
+
+        })
       })
 
       // Requests coming from DevTools
       connection.on('message', function (data) {
         var msg = JSON.parse(data)
-        msg = intercepter.hijackRequest(msg, target, connection, socket)
-        if (!msg) return
 
-        logger.info('websocket.' + socket.url + '.message.send')
+        intercepter.hijackRequest(msg, target, connection, socket).then(function (msg) {
+          logger.info('websocket.' + socket.url + '.message.send')
+          if (!msg) return
 
-        if (socket.readyState === WebSocket.OPEN) {
-          socket.send(JSON.stringify(msg))
-        }
+          if (socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify(msg))
+          }
+
+        })
       })
     })
 
