@@ -6,13 +6,17 @@ A gateway for RemoteDebug (Chrome Remote Debugging) connections, that allows you
 
 ![Logo](https://github.com/auchenberg/remotedebug-gateway/raw/master/logo.png)
 
-Features
+### Features
 - Chrome HTTP endpoint ```/json``` for compatbility with [Chrome DevTools app](https://github.com/auchenberg/chrome-devtools-app).
 - Builds unified list of debuggable targets across connected browsers
 - Ability to hijack and incepter requests/responses via plugin architecture
    	- Plugin: Enable screencasting for Chrome desktop.
    	- Plugin: Realtime visual regression testing.
 	- Keeps track of node ids from servers, and matches requests to the correct node of connected servers
+
+### Plugin: Visual regression
+![](https://github.com/auchenberg/remotedebug-gateway/raw/master/visual-diff.jpg)
+
 
 ### Installation
 
