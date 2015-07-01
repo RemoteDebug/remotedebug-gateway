@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "rd-gateway": "./cli.js"
+  },
   "scripts": {
     "start": "node index.js",
     "test": "standard"
@@ -23,6 +26,7 @@
     "es6-promise": "^2.3.0",
     "express": "^4.12.3",
     "launchpad": "^0.4.7",
+    "optimist": "^0.6.1",
     "portscanner": "^1.0.0",
     "request": "^2.57.0",
     "require-dir": "^0.3.0",
