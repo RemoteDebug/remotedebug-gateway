@@ -99,7 +99,9 @@ function Launch(gateway) {
 
   api.closeOpenBrowsers = function() {
     openBrowsers.forEach(function(b) {
-      b.stop()
+      b.stop(function() {
+
+      })
     })
   }
 
