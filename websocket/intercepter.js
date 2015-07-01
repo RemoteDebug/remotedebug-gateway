@@ -1,12 +1,12 @@
 var requireDir = require('require-dir')
-var logger = require('./logger')
+var logger = require('../logger')
 var Promise = require('es6-promise').Promise;
 
-var loadedPlugins = requireDir('./plugins')
+var loadedPlugins = requireDir('../plugins')
 var plugins = Object.keys(loadedPlugins).map(function (key) {
   return loadedPlugins[key]
 })
-logger.info('Intercepter.plugins', plugins.length)
+// logger.info('Intercepter.plugins', plugins.length)
 
 var Intercepter = function () {
 

@@ -1,6 +1,7 @@
 var logger = require('../logger')
 var Promise = require('es6-promise').Promise
 
+// This plugin enables screencasting for all clients.
 function ScreencastingPlugin () {
 
   this.onRequest = function (msg, target, connection, socket) {

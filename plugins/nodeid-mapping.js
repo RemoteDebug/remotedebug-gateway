@@ -3,7 +3,7 @@ var logger = require('../logger')
 var Promise = require('es6-promise').Promise
 
 Array.prototype.insert = function (index, items) {
-  this.splice.apply(this, [index, 0].concat(items))
+  Array.prototype.splice.apply(this, [index, 0].concat(items))
 }
 
 function NodeIdsPlugin () {

@@ -19,7 +19,16 @@ function VisualDiffPlugin () {
       if (msg.method && msg.method === 'Page.screencastFrame') {
         logger.log('VisualDiffPlugin.screencastFrame');
 
-        frameBuffer.push(msg.params.data);
+        var lastSocketIndex = frameBuffer.length ? frameBuffer[frameBuffer.length -1].socketIndex : null
+        var socketIndex = target.connections.indexOf(socket);
+
+        // Only push frames that isn't from the previous frame's socket
+        if(socketIndex !== lastSocketIndex) {
+          frameBuffer.push({
+            socketIndex: socketIndex,
+            data: msg.params.data
+          })
+        }
 
         // Make sure we always have the two latest frames
         if (frameBuffer.length > 2) {
@@ -27,8 +36,8 @@ function VisualDiffPlugin () {
         }
 
         if (frameBuffer.length > 1) {
-          var img1 = new Buffer(frameBuffer[0], 'base64');
-          var img2 = new Buffer(frameBuffer[1], 'base64');
+          var img1 = new Buffer(frameBuffer[0].data, 'base64');
+          var img2 = new Buffer(frameBuffer[1].data, 'base64');
 
           logger.log('VisualDiffPlugin.compare');
 
