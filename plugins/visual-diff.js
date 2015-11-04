@@ -1,6 +1,7 @@
 var logger = require('../logger')
 var Promise = require('es6-promise').Promise
 var resemble = require('resemble').resemble
+var debug = require('debug')('plugin:visualdiff')
 
 function VisualDiffPlugin () {
 
@@ -17,7 +18,7 @@ function VisualDiffPlugin () {
     return new Promise(function (resolve, reject) {
 
       if (msg.method && msg.method === 'Page.screencastFrame') {
-        logger.log('VisualDiffPlugin.screencastFrame');
+        debug('plugin.visualdiff.screencastFrame');
 
         var lastSocketIndex = frameBuffer.length ? frameBuffer[frameBuffer.length -1].socketIndex : null
         var socketIndex = target.connections.indexOf(socket);
@@ -39,10 +40,10 @@ function VisualDiffPlugin () {
           var img1 = new Buffer(frameBuffer[0].data, 'base64');
           var img2 = new Buffer(frameBuffer[1].data, 'base64');
 
-          logger.log('VisualDiffPlugin.compare');
+          debug('plugin.visualdiff.compare');
 
           resemble(img1).compareTo(img2).onComplete(function(diffData){
-            logger.log('VisualDiffPlugin.compare.complete', diffData);
+            debug('plugin.visualdiff.compare.complete', diffData);
             var url = diffData.getImageDataUrl();
             url = url.replace(/^data:image\/\w+;base64,/,"")
             msg.params.data = url
