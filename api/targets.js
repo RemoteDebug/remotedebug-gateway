@@ -33,7 +33,7 @@ function Targets(gateway) {
     var target = {
       description: info.description,
       devtoolsFrontendUrl: '/devtools/devtools.html?ws=' + webSocketUrl,
-      devtoolsUrl: 'chrome-devtools://devtools/bundled/devtools.html?ws=' + webSocketUrl + '&remoteFrontend=true',
+      devtoolsUrl: 'chrome-devtools://devtools/remote/serve_rev/@06a2e65a4f3610ec17dbc5988c0b16a95825240a/inspector.html?ws=' + webSocketUrl + '&remoteFrontend=true&dockSide=unlocked',
       id: id,
       title: info.title,
       type: 'page',
