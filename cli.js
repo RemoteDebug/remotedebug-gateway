@@ -19,37 +19,35 @@ if (argv.version) {
 
 var g = new Gateway({
   httpPort: argv.port
-});
+})
 
-Promise.delay = function(ms) {
-  return new Promise(function(r) {
-    setTimeout(r, ms);
+Promise.delay = function (ms) {
+  return new Promise(function (r) {
+    setTimeout(r, ms)
   })
 }
 
-if(argv.browsers) {
-
+if (argv.browsers) {
   var url = argv._[0] || 'about:blank'
 
-  var allBrowser = argv.browsers.split(',').map(function(browserName) {
-    console.log('.. launching browsers:', browserName);
-    return g.api.launchBrowser(browserName, url).then(function(browserInfo) {
+  var allBrowser = argv.browsers.split(',').map(function (browserName) {
+    console.log('.. launching browsers:', browserName)
+    return g.api.launchBrowser(browserName, url).then(function (browserInfo) {
       console.log('.. launched.', browserInfo)
       return g.api.connect(browserInfo.debugUrl)
     })
-  });
+  })
 
-  Promise.all(allBrowser).then(function() {
-    var target = g.api.findTargetByUrl(url);
-    if(target) {
-      console.log('.. done:');
+  Promise.all(allBrowser).then(function () {
+    var target = g.api.findTargetByUrl(url)
+    if (target) {
       process.stdout.write(target.devtoolsUrl)
     }
   })
 
 }
 
-process.on('SIGINT', function() {
-  g.api.closeOpenBrowsers();
-  process.exit();
+process.on('SIGINT', function () {
+  g.api.closeOpenBrowsers()
+  process.exit()
 })
