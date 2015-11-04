@@ -2,6 +2,7 @@
 
 var optimist = require('optimist')
 var Gateway = require('./')
+var url = require('url')
 
 process.title = 'remotedebug-gateway'
 
@@ -28,7 +29,12 @@ Promise.delay = function (ms) {
 }
 
 if (argv.browsers) {
-  var url = argv._[0] || 'about:blank'
+
+  if(argv._[0]) {
+    url = url.format(url.parse(argv._[0]))  
+  } else {
+    url =  'about:blank'
+  }
 
   var allBrowser = argv.browsers.split(',').map(function (browserName) {
     console.log('.. launching browsers:', browserName)
