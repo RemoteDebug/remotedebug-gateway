@@ -1,24 +1,20 @@
 var request = require('request')
-var Promise = require('es6-promise').Promise;
+var Promise = require('es6-promise').Promise
 
-function Targets(gateway) {
-
+function Targets (gateway) {
   var api = gateway.api
   var logger = gateway.logger
 
   api.findTargetByUrl = function (url) {
     var combinedTargets = gateway.combinedTargets
-
     var item = combinedTargets.filter(function (item) {
-      return item.url === url
+      return item.url == url
     })
-
     return item ? item[0] : null
   }
 
   api.findTargetById = function (id) {
     var combinedTargets = gateway.combinedTargets
-
     var item = combinedTargets.filter(function (item) {
       return item.id === id
     })
